@@ -1,0 +1,2 @@
+def AuthenticationError(Exception):
+    pass
