@@ -17,7 +17,7 @@ def HandleResponse(func):
 		# try: 
 			if request.method != "GET" and request.method != "DELETE":
 				body = request.get_json()
-				if body.get("list"):
+				if body.get("list") != None:
 					body = body["list"]
 				request.environ.update({"request_body": body})
 			(output, status_code) = func(*args, **kwargs)
@@ -169,3 +169,8 @@ def GeneratePassword(func):
 			element.update({"password": hash_password(generated_password)})
 		return func(*args, **kwargs)
 	return wrapper
+
+# def ValidateBodyRows(func):
+# 	@wraps(func)
+# 	def wrapper(*args, **kwargs):
+# 		request_body = request.environ.get("request_body")
