@@ -27,6 +27,13 @@ def sign_up():
     id = GetByModel("profile")["id"]
     return generate_token({"profileId": id}), 200    
 
+@app.route("/sign-in", methods="POST", endpoint="sign_in")
+@HandleResponse
+@ValidateRequest
+@GetBy("profile", "email", "body")
+def sign_in():
+    return generate_token({"profileId": request.environ.get("profile")["id"]}), 200
+
 @app.route('/profiles', methods=['GET'], endpoint="get_profiles")
 @HandleResponse
 @VerifyToken

@@ -119,6 +119,8 @@ def GetBy(model_name, by, loc):
 		def wrapper(*args, **kwargs):
 			if loc == "args":
 				docs = get_by_val(model_name, by, request.args.get(by))
+			if loc == "body":
+				docs = get_by_val(model_name, by, request.environ.get("request_body")[by])
 			else:
 				docs = get_by_val(model_name, "id", kwargs[by + "_id"])
 			
