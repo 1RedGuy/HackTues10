@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, request
-from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy
+from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists
 from utils.functions.token import generate_token
 from database.index import get_by_val
-from utils.functions.controllers import GetByModel, GetMySubjects
+from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
 from utils.functions.info import can_sign_up
 from flask import Flask, request, jsonify
 from utils.decorators import HandleResponse
@@ -65,6 +65,24 @@ def create_profile():
 @VerifyToken
 def get_my_subjects():
     return GetMySubjects()
+
+@app.route("/subjects", methods=["POST"])
+@HandleResponse
+@ValidateRequest
+@VerifyToken
+@VerifyRole("admin")
+@Create("subject")
+def create_subject():
+    return True, 201
+
+@app.route("/subject/<int:subject_id>/students", methods=["POST"])
+@HandleResponse
+@ValidateRequest
+@VerifyToken
+@VerifyRole("admin")
+@Exists("subject")
+def attach_students(subject_id): 
+    return AttachStudents(subject_id)
 
 if __name__ == '__main__':
     app.run(debug=True)

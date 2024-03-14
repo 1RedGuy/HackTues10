@@ -127,3 +127,16 @@ def GetBy(model_name, by, loc):
 		return wrapper
 	return decorator
 				
+def Exists(model_name):
+	def decorator(func):
+		@wraps(func)
+		def wrapper(*args, **kwargs):
+			element_id = kwargs.get(model_name+"_id")
+			element = get_by_id(model_name, element_id)
+			request.environ.update({model_name: element})
+			return func(*args, **kwargs)
+		return wrapper 
+	return decorator
+
+
+			
