@@ -1,0 +1,2 @@
+def AuthorizationError(Exception):
+    pass
