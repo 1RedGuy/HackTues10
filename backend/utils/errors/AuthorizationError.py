@@ -1,2 +1,2 @@
-def AuthorizationError(Exception):
+class AuthorizationError(Exception):
     pass

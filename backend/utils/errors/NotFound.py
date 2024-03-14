@@ -1,2 +1,2 @@
-def NotFoundError(Exception):
+class NotFoundError(Exception):
     pass

@@ -5,3 +5,4 @@ bcrypt==4.1.2
 flask_cors==2.1.2
 marshmallow-sqlalchemy==1.0.0
 marshmallow==3.21.1
+mysqlclient==2.2.4
