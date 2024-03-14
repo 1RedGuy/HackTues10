@@ -1,7 +1,7 @@
 "use client";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import setState from "../../../utils/setState";
+import SetState from "../../../utils/setState";
 import { SignInRequest } from "../../../network/auth";
 import styles from "./sign_in.module.css";
 import Router from "router";
@@ -22,7 +22,7 @@ export default function SignIn() {
       Router.push("../../admin");
     } catch (error) {
       console.error("Error:", error);
-      return <h1>Error</h1>;
+      return <h1 className={styles.error}>Error</h1>;
     }
   };
 
@@ -38,7 +38,7 @@ export default function SignIn() {
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState(state, "email", updateState, e.target.value)
+            SetState(state, "email", updateState, e.target.value)
           }
           className={styles.input}
         />
@@ -51,7 +51,7 @@ export default function SignIn() {
           type="password"
           value={state.password}
           onChange={(e) =>
-            setState(state, "password", updateState, e.target.value)
+            SetState(state, "password", updateState, e.target.value)
           }
           className={styles.input}
         />

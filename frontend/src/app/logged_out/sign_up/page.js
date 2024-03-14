@@ -1,7 +1,8 @@
 "use client";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import setState from "../../../utils/setState";
+S;
+import SetState from "../../../utils/setState";
 import { SignUpRequest } from "../../../network/auth";
 import styles from "./sign_up.module.css";
 import Router from "router";
@@ -17,7 +18,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const jwtToken = SignUpRequest(state);
+      const jwtToken = await SignUpRequest(state);
       Cookies.set("jwtToken", jwtToken, { expires: 0.5 });
       Router.push("../../logged_in/admin");
     } catch (error) {
@@ -37,7 +38,7 @@ export default function SignUp() {
           name="name"
           type="text"
           value={state.name}
-          onChange={(e) => setState(state, "name", updateState, e.target.value)}
+          onChange={(e) => SetState(state, "name", updateState, e.target.value)}
           className={styles.input}
         />
         <label htmlFor="email" className={styles.label}>
@@ -49,7 +50,7 @@ export default function SignUp() {
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState(state, "email", updateState, e.target.value)
+            SetState(state, "email", updateState, e.target.value)
           }
           className={styles.input}
         />
@@ -62,7 +63,7 @@ export default function SignUp() {
           type="password"
           value={state.password}
           onChange={(e) =>
-            setState(state, "password", updateState, e.target.value)
+            SetState(state, "password", updateState, e.target.value)
           }
           className={styles.input}
         />
@@ -75,7 +76,7 @@ export default function SignUp() {
           type="password"
           value={state.passwordConfirm}
           onChange={(e) =>
-            setState(state, "passwordConfirm", updateState, e.target.value)
+            SetState(state, "passwordConfirm", updateState, e.target.value)
           }
           className={styles.input}
         />
