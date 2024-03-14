@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, delete
 from sqlalchemy.orm import Session
 from database.dbmodels import Profile, Subject, Students_to_Subject, ProfileSchema, SubjectSchema
 from utils.errors.NotFound import NotFoundError
@@ -52,6 +52,12 @@ def change_record(model_name, id, model_dict):
             session.commit()
         else:
             raise NotFoundError(f"There is no such {model_name}!")
-    return 
+
+def delete_record(model_name, id):
+    with Session(engine) as session:
+        stmt = delete(models[model_name]).where(getattr(models[model_name], "id") == id)
+        session.commit()
+
+            
 
 
