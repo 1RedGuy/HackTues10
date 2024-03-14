@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify
-from utils.decorators import HandleResponse
 from dotenv import load_dotenv
 
 load_dotenv()
+
+from flask import Flask, request, jsonify
+from utils.decorators import HandleResponse
+
 
 app = Flask(__name__)
 
