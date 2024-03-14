@@ -17,12 +17,12 @@ def home():
     return "Home"
 
 
-@app.route("/info", methods=["GET"])
+@app.route("/info", methods=["GET"], endpoint="info")
 @HandleResponse
 def info():
     return can_sign_up(), 200
 
-@app.route('/sign-up', methods=['POST'])
+@app.route('/sign-up', methods=['POST'], endpoint="sign_up")
 @HandleResponse
 @SignUpAccess
 @ValidateRequest
@@ -32,7 +32,7 @@ def sign_up():
     id = GetByModel("profile").id
     return generate_token({"profileId": id}), 200
 
-@app.route('/subjects', methods=['POST'])
+@app.route('/subjects', methods=['POST'], endpoint="create_subject")
 @HandleResponse
 @ValidateRequest
 @VerifyToken
@@ -42,7 +42,7 @@ def create_subject():
     return GetByModel("subject")
     
 
-@app.route('/profiles', methods=['GET'])
+@app.route('/profiles', methods=['GET'], endpoint="get_profiles")
 @HandleResponse
 @VerifyToken
 @VerifyRole("admin")
@@ -51,7 +51,7 @@ def get_profiles():
     return GetByModel("profiles"), 200
 
 
-@app.route("/profiles", methods=["POST"])
+@app.route("/profiles", methods=["POST"], endpoint = "create_profile")
 @HandleResponse
 @ValidateRequest
 @VerifyToken
@@ -66,7 +66,7 @@ def create_profile():
 def get_my_subjects():
     return GetMySubjects()
 
-@app.route("/subjects", methods=["POST"])
+@app.route("/subjects", methods=["POST"], endpoint = "create_subject")
 @HandleResponse
 @ValidateRequest
 @VerifyToken
@@ -75,7 +75,7 @@ def get_my_subjects():
 def create_subject():
     return True, 201
 
-@app.route("/subject/<int:subject_id>/students", methods=["POST"])
+@app.route("/subject/<int:subject_id>/students", methods=["POST"], endpoint = "attach_students")
 @HandleResponse
 @ValidateRequest
 @VerifyToken
