@@ -8,3 +8,4 @@ def verify_password(password: str) -> bool:
         and re.search(r'[!@#$%^&*()_+\-=\[\]{};:\'",.<>\/?]', password)
         and not any(pattern in password.lower() for pattern in ["123456", "password", "qwerty", "12345678"])
     )
+    
