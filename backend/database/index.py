@@ -58,6 +58,12 @@ def delete_record(model_name, id):
         stmt = delete(models[model_name]).where(getattr(models[model_name], "id") == id)
         session.commit()
 
-            
+def get_students_subjects(student_id):
+    with Session(engine) as session:
+        stmt = select(Students_to_Subject).where(Students_to_Subject.student_id == student_id).join(Subject, Subject.id == Students_to_Subject.subject_id)
+        scalars = []
 
+        for res in stmt:
+            scalars.append(SubjectSchema().dump(session.scalars(res)))
 
+        return scalars
