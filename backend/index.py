@@ -11,9 +11,8 @@ from utils.decorators import HandleResponse
 from flask_cors import CORS
 from mail.index import Email_Service
 
-CORS(app)
-
 app = Flask(__name__)
+CORS(app)
 @app.route("/info", methods=["GET"], endpoint="info")
 @HandleResponse
 def info():
