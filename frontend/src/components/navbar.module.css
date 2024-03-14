@@ -1,0 +1,33 @@
+.navbar {
+    position: sticky;
+    top:0;
+   
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #0077cc;
+    padding: 15px 20px;
+  
+}
+
+.home {
+    
+    color: #ffffff;
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: bold;
+        transition: color 0.3s ease;
+}
+
+.link {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+    transition: color 0.3s ease; 
+
+}
+
+.link:hover {
+    color: #66c2ff;
+}

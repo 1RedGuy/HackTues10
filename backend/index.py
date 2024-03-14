@@ -8,7 +8,9 @@ from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudent
 from utils.functions.info import can_sign_up
 from flask import Flask, request, jsonify
 from utils.decorators import HandleResponse
+from flask_cors import CORS
 
+CORS(app)
 
 app = Flask(__name__)
 @app.route("/info", methods=["GET"], endpoint="info")
