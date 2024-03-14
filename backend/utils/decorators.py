@@ -22,9 +22,9 @@ def HandleResponse(func):
 			return jsonify({"response": output}), status_code
 		
 		except ValidationError as error:    
-			return jsonify({"Validation Error": str(error)}), 400
+			return jsonify({"error": str(error)}), 400
 		except Exception as error:
-			return jsonify({"Exception Error": str(error)}), 500
+			return jsonify({"error": str(error)}), 500
 	return wrapper
 
 def ValidateRequest(func):
@@ -39,13 +39,21 @@ def ValidateRequest(func):
 def ValidateSignUp(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		credentials = request.environ.get("request_body")                        
+		credentials = request.environ.get("request_body")  
+		if len(credentials.values()) != 4:
+			raise ValidationError("Invalid sign up")                      
 		if credentials["password"] != credentials["confirm_password"]:
 			raise ValidationError("Passwords do not match")
 		if verify_email(credentials["email"]) == False:
 			raise ValidationError("Invalid email")
 		if verify_password(credentials["password"]) == False:
 			raise ValidationError("Invalid password")
+		if not credentials["name"]:
+			raise ValidationError("Name is empty")
+		
+		del credentials["confirm_password"]
+		credentials.update({"role": "admin"})
+
 		return func(*args, **kwargs)
 	return wrapper
 
@@ -96,12 +104,13 @@ def SignUpAccess(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
 		try:
-			profile = get_by_val("profile", "id", 1)
-		except:
-			return func(*args, **kwargs)
-		
-		if profile:
+			get_by_val("profile", "id", 1)
 			raise ForbiddenAccessError("Signing up is not allowed. Admin already exists.")
+		except NotFoundError as error:
+			return func(*args, **kwargs)
+		except Exception as error:
+			raise error
+		
 	return wrapper
 
 def GetBy(model_name, by, loc):

@@ -24,7 +24,7 @@ def info():
 @ValidateSignUp
 @Create("profile")
 def sign_up():
-    id = GetByModel("profile").id
+    id = GetByModel("profile")["id"]
     return generate_token({"profileId": id}), 200    
 
 @app.route('/profiles', methods=['GET'], endpoint="get_profiles")

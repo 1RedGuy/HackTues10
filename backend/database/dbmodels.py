@@ -15,10 +15,10 @@ class Profile(Base):
     email: Mapped[str] = mapped_column(String(30))
     password: Mapped[str] = mapped_column(String(30))
     role: Mapped[str] = mapped_column(String(30))
-    username: Mapped[str] = mapped_column(String(30))
+    name: Mapped[str] = mapped_column(String(30))
 
     def __repr__(self) -> str:
-        return f"Profile(id={self.id}, username={self.username})"
+        return f"Profile(id={self.id}, name={self.name})"
     
 class ProfileSchema(SQLAlchemySchema):
     class Meta:
@@ -29,7 +29,7 @@ class ProfileSchema(SQLAlchemySchema):
     email = auto_field()
     password = auto_field() 
     role = auto_field() 
-    username = auto_field() 
+    name = auto_field() 
 
 
 class Subject(Base):
