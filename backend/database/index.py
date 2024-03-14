@@ -19,8 +19,18 @@ def create_new_record(model_name, model_dict):
 
 def get_by_val(model_name, by, val):
     with Session(engine) as session:
-         models[model_name].__table__.create(bind=engine, checkfirst=True)
+        models[model_name].__table__.create(bind=engine, checkfirst=True)
 
-         stmt = select(models[model_name]).where(getattr(models[model_name], by) == val)
+        stmt = select(models[model_name]).where(getattr(models[model_name], by) == val)
 
+        scalars = []
+
+        for res in stmt:
+            
+            scalars.append(schemas[model_name]().dump(session.scalars(res)))
+
+        return scalars
+    
+def get_by_id(model_name):
+    return get_by_val(model_name,"id", 0)
 
