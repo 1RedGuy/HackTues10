@@ -13,13 +13,11 @@ from utils.decorators import HandleResponse
 app = Flask(__name__)
 
 @app.route('/')
-
 def home():
     return "Home"
 
 
 @app.route("/info", methods=["GET"])
-
 @HandleResponse
 def info():
     return can_sign_up(), 200
@@ -51,6 +49,14 @@ def create_subject():
 @VerifyRole("admin")
 
 
+@app.route("/profiles", methods=["POST"])
+@HandleResponse
+@ValidateRequest
+@VerifyToken
+@VerifyRole("admin")
+@Create("profile")
+def create_profile():
+    return True, 201
 
 if __name__ == '__main__':
     app.run(debug=True)

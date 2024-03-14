@@ -59,6 +59,12 @@ def Create(model):
 		@wraps(func)
 		def wrapper(*args, **kwargs):
 			request_body = request.environ.get("request_body")
+			if type(request_body) == type([]):
+				res = []
+				for record in request_body:
+					res.append(create_new_record(model, record))
+				request.environ.update({model+"s": res})
+				return func(*args, **kwargs)
 			res = create_new_record(model, request_body)
 			request.environ.update({model: res})
 			return func(*args, **kwargs)
