@@ -10,6 +10,7 @@ from utils.functions.email import verify_email
 from utils.functions.token import verify_token
 from database.index import create_new_record, get_by_id, get_by_val
 from utils.errors.NotFound import NotFoundError
+from mail.index import Email_Service
 
 def HandleResponse(func):
 	@wraps(func)
@@ -121,6 +122,8 @@ def GetBy(model_name, by, loc, assertive=True, listed=True):
 		@wraps(func)
 		def wrapper(*args, **kwargs):
 			print(loc)
+			if loc == None and by == None:
+				docs = get_by_val(model_name, assertive=assertive)
 			if loc == "args":
 				docs = get_by_val(model_name, by, request.args.get(by), assertive)
 			elif loc == "body":
@@ -166,11 +169,24 @@ def GeneratePassword(func):
 		request_body = request.environ.get("request_body")
 		for element in request_body:
 			generated_password = generate_password()
+			email_service = Email_Service()
+			email_service.send_password(element["email"], generated_password)
 			element.update({"password": hash_password(generated_password)})
+		
+		
 		return func(*args, **kwargs)
 	return wrapper
 
-# def ValidateBodyRows(func):
-# 	@wraps(func)
-# 	def wrapper(*args, **kwargs):
-# 		request_body = request.environ.get("request_body")
+def ValidateBodyRoles(role):
+	def decorator(func):
+		@wraps(func)
+		def wrapper(*args, **kwargs):
+			request_body = request.environ.get("request_body")
+			for element in request_body:
+				profile = get_by_id("profile",element[role + "_id"])
+				if profile["role"] != role:
+					raise ValidationError(f"Profile with id = {id} is not {role}")
+			return func(*args, **kwargs)
+		return wrapper
+	return decorator		
+		

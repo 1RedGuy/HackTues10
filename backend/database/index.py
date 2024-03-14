@@ -1,13 +1,13 @@
 from sqlalchemy import create_engine, select, delete
 from sqlalchemy.orm import Session
-from database.dbmodels import Profile, Subject, Students_to_Subject, ProfileSchema, SubjectSchema
+from database.dbmodels import Profile, Subject, Students_to_Subject, ProfileSchema, SubjectSchema, Posts, PostsSchema
 from utils.errors.NotFound import NotFoundError
 import os
 
 engine = create_engine(os.getenv("DATABASE_URI"), echo=True)
 
-models = {"profile": Profile, "subject":Subject, "student_to_subject":Students_to_Subject}
-schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema}
+models = {"profile": Profile, "subject":Subject, "student_to_subject":Students_to_Subject, "posts": Posts}
+schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema, "posts_schema": PostsSchema}
 
 def create_new_record(model_name, model_dict, seraialize=True):
     with Session(engine) as session:
@@ -24,8 +24,10 @@ def create_new_record(model_name, model_dict, seraialize=True):
 def get_by_val(model_name, by, val, assertive=True):
     with Session(engine) as session:
         models[model_name].__table__.create(bind=engine, checkfirst=True)
-
-        stmt = select(models[model_name]).where(getattr(models[model_name], by) == val)
+        if by == None and val==None:
+            stmt = select(models[model_name])
+        else:
+            stmt = select(models[model_name]).where(getattr(models[model_name], by) == val)
 
         dumped_scalars = []
 

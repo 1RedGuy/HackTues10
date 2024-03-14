@@ -3,7 +3,7 @@ load_dotenv()
 
 
 from flask import Flask, request
-from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword
+from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles
 from utils.functions.token import generate_token
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
 from utils.functions.info import can_sign_up
@@ -78,6 +78,7 @@ def create_subject():
 @VerifyToken
 @VerifyRole("admin")
 @Exists("subject")
+@ValidateBodyRoles("student")
 def attach_students(subject_id): 
     return AttachStudents(subject_id)
 
@@ -86,6 +87,30 @@ def verify_email():
     a = Email_Service()
     a.send_email("demirev2@hotmail.com", "<h1>Test</h1>", "HackTues10")
     return "okay", 200
+
+@app.route("/profiles/me", methods=['GET'], endpoint="show_profile")
+@HandleResponse
+@VerifyToken
+def show_profile():
+    return GetByModel("ri_profile")
+
+@app.route('/subjects/<int:subject_id>/posts', methods=['GET'], endpoint="show_posts")
+@HandleResponse
+@VerifyToken
+@Exists("subject")
+@GetBy("posts", "subject_id", "path", assertive=False)
+def show_posts():
+    return GetByModel("posts")
+
+@app.route('/subject/<int:subject_id>/posts', methods=['POST'], endpoint="create_post")
+@HandleResponse
+@ValidateRequest
+@VerifyToken
+@VerifyRole("teacher")
+@Create("posts")
+def create_post():
+    return
+
 
 if __name__ == '__main__':
     app.run(debug=True)

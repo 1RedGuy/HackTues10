@@ -57,7 +57,20 @@ class Students_to_Subject(Base):
     student_id : Mapped[int] = mapped_column(ForeignKey("profile.id"))
     subject_id : Mapped[int] = mapped_column(ForeignKey("subject.id"))
 
+class Posts(Base):
+    __tablename__ = "posts"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    url: Mapped[str] = mapped_column(String(30))
+    title: Mapped[str] = mapped_column(String(30))
+    subject_id: Mapped[int] = mapped_column(ForeignKey("subject.id"))
 
+class PostsSchema(Base):
+    class Meta:
+        model = Posts
+        load_instance = True
+
+    url = auto_field()
+    title = auto_field()
 
 
     

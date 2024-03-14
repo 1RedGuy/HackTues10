@@ -21,4 +21,3 @@ class Email_Service():
         message["From"] = sender_email
         message["To"] = receiver_email
         self.server.sendmail(sender_email, receiver_email, message.as_string())
-
