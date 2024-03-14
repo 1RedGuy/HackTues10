@@ -1,18 +1,19 @@
 from dotenv import load_dotenv
 load_dotenv()
+
+
 from flask import Flask, request
 from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword
 from utils.functions.token import generate_token
-from database.index import get_by_val
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
 from utils.functions.info import can_sign_up
-from flask import Flask, request, jsonify
 from utils.decorators import HandleResponse
-from flask_cors import CORS
 from mail.index import Email_Service
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
 @app.route("/info", methods=["GET"], endpoint="info")
 @HandleResponse
 def info():
@@ -83,7 +84,7 @@ def attach_students(subject_id):
 @app.route("/email", methods=["GET"], endpoint="verify_email")
 def verify_email():
     a = Email_Service()
-    a.send_email("demirev2@hotmail.com", "<h1>Test</h1>")
+    a.send_email("demirev2@hotmail.com", "<h1>Test</h1>", "HackTues10")
     return "okay", 200
 
 if __name__ == '__main__':

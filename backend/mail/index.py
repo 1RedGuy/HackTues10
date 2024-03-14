@@ -1,4 +1,5 @@
 import smtplib, ssl, os
+from email.mime.multipart import MIMEMultipart
 
 smtp_server = os.getenv("SMTP_SERVER")
 sender_email = os.getenv("SENDER_EMAIL")
@@ -14,6 +15,10 @@ class Email_Service():
         server.login(sender_email, password)
         print("Email server connected")
         self.server = server
-    def send_email(self, receiver_email: str, message: str):
-        self.server.sendmail(sender_email, receiver_email, message)
+    def send_email(self, receiver_email, message, subject):
+        message = MIMEMultipart("alternative")
+        message["Subject"] = subject
+        message["From"] = sender_email
+        message["To"] = receiver_email
+        self.server.sendmail(sender_email, receiver_email, message.as_string())
 
