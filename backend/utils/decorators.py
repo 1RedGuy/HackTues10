@@ -14,17 +14,17 @@ from utils.errors.NotFound import NotFoundError
 def HandleResponse(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		# try: 
+		try: 
 			if request.method != "GET" and request.method != "DELETE":
 				request.environ.update({"request_body": request.get_json()})
 
 			(output, status_code) = func(*args, **kwargs)
 			return jsonify({"response": output}), status_code
 		
-		# except ValidationError as error:    
-		# 	return jsonify({"Validation Error": str(error)}), 400
-		# except Exception as error:
-		# 	return jsonify({"Exception Error": str(error)}), 500
+		except ValidationError as error:    
+			return jsonify({"Validation Error": str(error)}), 400
+		except Exception as error:
+			return jsonify({"Exception Error": str(error)}), 500
 	return wrapper
 
 def ValidateRequest(func):
