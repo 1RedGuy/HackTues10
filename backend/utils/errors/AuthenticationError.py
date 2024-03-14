@@ -1,2 +1,2 @@
-def AuthenticationError(Exception):
+class AuthenticationError(Exception):
     pass

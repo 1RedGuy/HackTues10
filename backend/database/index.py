@@ -25,17 +25,16 @@ def get_by_val(model_name, by, val):
 
         stmt = select(models[model_name]).where(getattr(models[model_name], by) == val)
 
-        scalars = []
+        dumped_scalars = []
 
-        if stmt:
-            for res in stmt:
-                if res:
-                    scalars.append(schemas[model_name]().dump(session.scalars(res)))
-                else:
-                    raise NotFoundError("There is no such a record!")
+        exists = session.scalar(stmt.limit(1))
+
+        if exists:
+            for res in session.scalars(stmt):
+                dumped_scalars.append(schemas[model_name]().dump(session.scalars(res)))
         else:
-            raise NotFoundError("There is no such a record!")
-        return scalars
+            raise NotFoundError(f"There is no such a {model_name}!")
+        return dumped_scalars
     
 def get_by_id(model_name, id):
     return get_by_val(model_name,"id", id)[0]

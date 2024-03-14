@@ -1,2 +1,2 @@
-def ForbiddenAccessError(Exception):
+class ForbiddenAccessError(Exception):
     pass

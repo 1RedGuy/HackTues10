@@ -11,16 +11,11 @@ from utils.decorators import HandleResponse
 
 
 app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Home"
-
-
 @app.route("/info", methods=["GET"], endpoint="info")
 @HandleResponse
 def info():
     return can_sign_up(), 200
+
 
 @app.route('/sign-up', methods=['POST'], endpoint="sign_up")
 @HandleResponse
@@ -30,17 +25,7 @@ def info():
 @Create("profile")
 def sign_up():
     id = GetByModel("profile").id
-    return generate_token({"profileId": id}), 200
-
-@app.route('/subjects', methods=['POST'], endpoint="create_subject")
-@HandleResponse
-@ValidateRequest
-@VerifyToken
-@VerifyRole("admin")
-@Create("subject")
-def create_subject():
-    return GetByModel("subject")
-    
+    return generate_token({"profileId": id}), 200    
 
 @app.route('/profiles', methods=['GET'], endpoint="get_profiles")
 @HandleResponse
