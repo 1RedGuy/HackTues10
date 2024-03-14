@@ -9,6 +9,7 @@ from utils.functions.password import verify_password
 from utils.functions.email import verify_email
 from utils.functions.token import verify_token
 from database.index import create_new_record, get_by_id, get_by_val
+from utils.errors.NotFound import NotFoundError
 
 def HandleResponse():
 	def decorator(func):
@@ -105,3 +106,18 @@ def SignUpAccess():
 				raise ForbiddenAccessError("Signing up is not allowed. Admin already exists.")
 		return wrapper
 	return decorator
+
+def GetBy(model_name, by, loc):
+	def decorator(func):
+		@wraps(func)
+		def wrapper(*args, **kwargs):
+			if loc == "args":
+				docs = get_by_val(model_name, by, request.args.get(by))
+			else:
+				docs = get_by_val(model_name, "id", kwargs[by + "_id"])
+			
+			request.environ.update({model_name + "s": docs})
+			return func(*args, **kwargs)
+		return wrapper
+	return decorator
+				
