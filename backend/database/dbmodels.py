@@ -13,7 +13,7 @@ class Profile(Base):
     __tablename__ = "profile"
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(30))
-    password: Mapped[str] = mapped_column(String(30))
+    password: Mapped[str] = mapped_column(String(150))
     role: Mapped[str] = mapped_column(String(30))
     name: Mapped[str] = mapped_column(String(30))
 
@@ -52,7 +52,7 @@ class SubjectSchema(SQLAlchemySchema):
     name = auto_field()
 
 class Students_to_Subject(Base):
-    __tablename__ = "students_to_subject"
+    __tablename__ = "student_to_subject"
     id: Mapped[int] = mapped_column(primary_key=True)
     student_id : Mapped[int] = mapped_column(ForeignKey("profile.id"))
     subject_id : Mapped[int] = mapped_column(ForeignKey("subject.id"))

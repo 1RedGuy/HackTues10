@@ -7,9 +7,9 @@ import os
 engine = create_engine(os.getenv("DATABASE_URI"), echo=True)
 
 models = {"profile": Profile, "subject":Subject, "student_to_subject":Students_to_Subject}
-schemas = {"profile": ProfileSchema, "subject": SubjectSchema}
+schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema}
 
-def create_new_record(model_name, model_dict):
+def create_new_record(model_name, model_dict, seraialize=True):
     with Session(engine) as session:
         models[model_name].__table__.create(bind=engine, checkfirst=True)
         print(model_dict)
@@ -17,10 +17,11 @@ def create_new_record(model_name, model_dict):
 
         session.add(new_record)
         session.commit()
-    
-        return schemas[model_name]().dump(new_record)
 
-def get_by_val(model_name, by, val):
+        if seraialize:
+            return schemas[model_name]().dump(new_record)
+
+def get_by_val(model_name, by, val, assertive=True):
     with Session(engine) as session:
         models[model_name].__table__.create(bind=engine, checkfirst=True)
 
@@ -30,11 +31,15 @@ def get_by_val(model_name, by, val):
 
         exists = session.scalar(stmt.limit(1))
 
+        print(assertive)
+
         if exists:
             for res in session.scalars(stmt):
                 dumped_scalars.append(schemas[model_name]().dump(res))
         else:
-            raise NotFoundError(f"There is no such a {model_name}!")
+            if assertive:
+                raise NotFoundError(f"There is no such {model_name}!")
+            return []
         return dumped_scalars
     
 def get_by_id(model_name, id):

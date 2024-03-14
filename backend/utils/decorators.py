@@ -5,7 +5,7 @@ from utils.errors.ForbiddenAccessError import ForbiddenAccessError
 from utils.errors.AuthenticationError import AuthenticationError
 from flask import request, jsonify
 from functools import wraps
-from utils.functions.password import verify_password
+from utils.functions.password import verify_password, check_password, hash_password, generate_password
 from utils.functions.email import verify_email
 from utils.functions.token import verify_token
 from database.index import create_new_record, get_by_id, get_by_val
@@ -14,17 +14,19 @@ from utils.errors.NotFound import NotFoundError
 def HandleResponse(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		try: 
+		# try: 
 			if request.method != "GET" and request.method != "DELETE":
-				request.environ.update({"request_body": request.get_json()})
-
+				body = request.get_json()
+				if body.get("list"):
+					body = body["list"]
+				request.environ.update({"request_body": body})
 			(output, status_code) = func(*args, **kwargs)
 			return jsonify({"response": output}), status_code
 		
-		except ValidationError as error:    
-			return jsonify({"error": str(error)}), 400
-		except Exception as error:
-			return jsonify({"error": str(error)}), 500
+		# except ValidationError as error:    
+		# 	return jsonify({"error": str(error)}), 400
+		# except Exception as error:
+		# 	return jsonify({"error": str(error)}), 500
 	return wrapper
 
 def ValidateRequest(func):
@@ -53,6 +55,7 @@ def ValidateSignUp(func):
 		
 		del credentials["confirm_password"]
 		credentials.update({"role": "admin"})
+		credentials["password"] = hash_password(credentials["password"])
 
 		return func(*args, **kwargs)
 	return wrapper
@@ -113,16 +116,21 @@ def SignUpAccess(func):
 		
 	return wrapper
 
-def GetBy(model_name, by, loc):
+def GetBy(model_name, by, loc, assertive=True, listed=True):
 	def decorator(func):
 		@wraps(func)
 		def wrapper(*args, **kwargs):
+			print(loc)
 			if loc == "args":
-				docs = get_by_val(model_name, by, request.args.get(by))
-			if loc == "body":
-				docs = get_by_val(model_name, by, request.environ.get("request_body")[by])
+				docs = get_by_val(model_name, by, request.args.get(by), assertive)
+			elif loc == "body":
+				docs = get_by_val(model_name, by, request.environ.get("request_body")[by], assertive)
 			else:
-				docs = get_by_val(model_name, "id", kwargs[by + "_id"])
+				docs = get_by_val(model_name, "id", kwargs[by + "_id"], assertive)
+
+			if not listed:
+				request.environ.update({model_name: docs[0]})
+				return func(*args, **kwargs)
 			
 			request.environ.update({model_name + "s": docs})
 			return func(*args, **kwargs)
@@ -141,4 +149,23 @@ def Exists(model_name):
 	return decorator
 
 
-			
+def VerifyPassword(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		credentials = request.environ.get("request_body")
+		profile = request.environ.get("profile")
+		if check_password(credentials["password"], profile["password"]):
+			return func(*args, **kwargs)
+		else:
+			raise AuthenticationError("Invalid password")
+	return wrapper
+
+def GeneratePassword(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		request_body = request.environ.get("request_body")
+		for element in request_body:
+			generated_password = generate_password()
+			element.update({"password": hash_password(generated_password)})
+		return func(*args, **kwargs)
+	return wrapper

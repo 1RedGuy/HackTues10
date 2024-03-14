@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, request
-from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists
+from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword
 from utils.functions.token import generate_token
 from database.index import get_by_val
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
@@ -27,10 +27,11 @@ def sign_up():
     id = GetByModel("profile")["id"]
     return generate_token({"profileId": id}), 200    
 
-@app.route("/sign-in", methods="POST", endpoint="sign_in")
+@app.route("/sign-in", methods=["POST"], endpoint="sign_in")
 @HandleResponse
 @ValidateRequest
-@GetBy("profile", "email", "body")
+@GetBy("profile", "email", "body", listed=False)
+@VerifyPassword
 def sign_in():
     return generate_token({"profileId": request.environ.get("profile")["id"]}), 200
 
@@ -38,7 +39,7 @@ def sign_in():
 @HandleResponse
 @VerifyToken
 @VerifyRole("admin")
-@GetBy("profile", "role", "args")
+@GetBy("profile", "role", "args", False)
 def get_profiles():
     return GetByModel("profiles"), 200
 
@@ -48,6 +49,7 @@ def get_profiles():
 @ValidateRequest
 @VerifyToken
 @VerifyRole("admin")
+@GeneratePassword
 @Create("profile")
 def create_profile():
     return True, 201
