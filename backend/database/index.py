@@ -7,7 +7,7 @@ import os
 engine = create_engine(os.getenv("DATABASE_URI"), echo=True)
 
 models = {"profile": Profile, "subject":Subject, "student_to_subject":Student_to_Subject, "posts": Posts}
-schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema, "posts_schema": PostsSchema}
+schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema, "posts": PostsSchema}
 
 def create_new_record(model_name, model_dict, seraialize=True):
     with Session(engine) as session:

@@ -14,6 +14,10 @@ from mail.index import Email_Service
 from werkzeug.utils import secure_filename
 import os
 from utils.functions.allowed_file import allowed_file
+from assistance.utils import Model_Service
+import json
+from utils.functions.presentation import generate_presentation
+
 
 def HandleResponse(func):
 	@wraps(func)
@@ -197,13 +201,16 @@ def StoreFile(func):
 			raise NotFoundError("No file!")
 
 		files = request.files.getlist('files[]')
-
+		url = ""
 		for file in files:
 			if file and allowed_file(file.filename):
 				filename = secure_filename(file.filename)
-				file.save(os.getcwd() + os.path.join("\\public", filename))
+				url = os.getcwd() + os.path.join("\\public", filename)
+				file.save(url)
+				break
 			else:
 				raise NotFoundError("No file!")
+		request.environ.update({"file_url": url})
 		return func(*args, **kwargs)
 	return wrapper
 	
@@ -216,4 +223,36 @@ def GetJSONBody(func):
 				body = body["list"]
 			request.environ.update({"request_body": body})
 		return func(*args, **kwargs)
+	return wrapper
+
+
+def Mp3ToPptx(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		file_url = request.environ.get("file_url")
+		pptx_url = file_url.replace(".mp3", ".pptx")
+
+		# service = Model_Service()
+		# text = service.mp3_to_json(file_url)
+
+		text = 'json```[{ "TITLE": "Gosho1", "TEXT": { "TYPE": "TEXT", "VALUE": "GoshoBody" } }]```'
+		text = text.replace("json```", "")
+		text = text.replace("```", "")
+
+		jsoned = json.loads(text)
+		generate_presentation(jsoned, pptx_url)
+
+		pptx_url =os.getenv("SERVER_URL") + os.path.basename(pptx_url)
+
+		request_body = {"subject_id": kwargs.get("subject_id"), "title": jsoned[0]["TITLE"], "url": pptx_url}
+		request.environ.update({"request_body": request_body})
+		
+
+		return func(*args, **kwargs)
+	return wrapper
+
+def Clean(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		return func()
 	return wrapper

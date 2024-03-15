@@ -60,8 +60,8 @@ class Student_to_Subject(Base):
 class Posts(Base):
     __tablename__ = "posts"
     id: Mapped[int] = mapped_column(primary_key=True)
-    url: Mapped[str] = mapped_column(String(30))
-    title: Mapped[str] = mapped_column(String(30))
+    url: Mapped[str] = mapped_column(String(500))
+    title: Mapped[str] = mapped_column(String(50))
     subject_id: Mapped[int] = mapped_column(ForeignKey("subject.id"))
 
 class PostsSchema(SQLAlchemySchema):

@@ -4,7 +4,7 @@ import time, logging
 from datetime import datetime
 from dotenv import load_dotenv
 from mutagen.mp3 import MP3
-from mp3_utils import MP3_Service
+from assistance.mp3_utils import MP3_Service
 
 load_dotenv()
 

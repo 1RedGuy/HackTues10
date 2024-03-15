@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, request
-from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody
+from flask import Flask, request, send_from_directory
+from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody, Mp3ToPptx, Clean
 from utils.functions.token import generate_token
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
 from utils.functions.info import can_sign_up
@@ -12,7 +12,9 @@ from mail.index import Email_Service
 
 app = Flask(__name__)
 # CORS(app)
-
+@app.route('/<path:path>')
+def send_report(path):
+    return send_from_directory('public', path)
 
 @app.route("/info", methods=["GET"], endpoint="info")
 @HandleResponse
@@ -113,7 +115,9 @@ def show_posts():
 @VerifyToken
 @VerifyRole("teacher")
 @StoreFile
-# @Create("posts")
+@Mp3ToPptx
+@Create("posts")
+@Clean
 def create_post():
     return True, 201
 
