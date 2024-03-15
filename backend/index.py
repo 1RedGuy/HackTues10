@@ -8,10 +8,10 @@ from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudent
 from utils.functions.info import can_sign_up
 from utils.decorators import HandleResponse
 from mail.index import Email_Service
-# from flask_cors import CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 @app.route('/<path:path>')
 def send_report(path):
     return send_from_directory('public', path)
