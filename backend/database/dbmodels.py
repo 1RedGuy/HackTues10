@@ -64,7 +64,7 @@ class Posts(Base):
     title: Mapped[str] = mapped_column(String(30))
     subject_id: Mapped[int] = mapped_column(ForeignKey("subject.id"))
 
-class PostsSchema(Base):
+class PostsSchema(SQLAlchemySchema):
     class Meta:
         model = Posts
         load_instance = True

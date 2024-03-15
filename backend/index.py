@@ -2,25 +2,28 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, request
-from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles
+from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody
 from utils.functions.token import generate_token
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
 from utils.functions.info import can_sign_up
 from utils.decorators import HandleResponse
 from mail.index import Email_Service
-from flask_cors import CORS
+# from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
+
 
 @app.route("/info", methods=["GET"], endpoint="info")
 @HandleResponse
+@GetJSONBody
 def info():
     return can_sign_up(), 200
 
 
 @app.route('/sign-up', methods=['POST'], endpoint="sign_up")
 @HandleResponse
+@GetJSONBody
 @SignUpAccess
 @ValidateRequest
 @ValidateSignUp
@@ -31,6 +34,7 @@ def sign_up():
 
 @app.route("/sign-in", methods=["POST"], endpoint="sign_in")
 @HandleResponse
+@GetJSONBody
 @ValidateRequest
 @GetBy("profile", "email", "body", listed=False)
 @VerifyPassword
@@ -39,6 +43,7 @@ def sign_in():
 
 @app.route('/profiles', methods=['GET'], endpoint="get_profiles")
 @HandleResponse
+@GetJSONBody
 @VerifyToken
 @VerifyRole("admin")
 @GetBy("profile", "role", "args", False)
@@ -48,6 +53,7 @@ def get_profiles():
 
 @app.route("/profiles", methods=["POST"], endpoint = "create_profile")
 @HandleResponse
+@GetJSONBody
 @ValidateRequest
 @VerifyToken
 @VerifyRole("admin")
@@ -58,12 +64,14 @@ def create_profile():
 
 @app.route('/subjects/me', methods=['GET'], endpoint="get_my_subject")
 @HandleResponse
+@GetJSONBody
 @VerifyToken
 def get_my_subjects():
     return GetMySubjects()
 
 @app.route("/subjects", methods=["POST"], endpoint = "create_subject")
 @HandleResponse
+@GetJSONBody
 @ValidateRequest
 @VerifyToken
 @VerifyRole("admin")
@@ -73,6 +81,7 @@ def create_subject():
 
 @app.route("/subject/<int:subject_id>/students", methods=["POST"], endpoint = "attach_students")
 @HandleResponse
+@GetJSONBody
 @ValidateRequest
 @VerifyToken
 @VerifyRole("admin")
@@ -81,34 +90,34 @@ def create_subject():
 def attach_students(subject_id): 
     return AttachStudents(subject_id)
 
-@app.route("/email", methods=["GET"], endpoint="verify_email")
-def verify_email():
-    a = Email_Service()
-    a.send_email("demirev2@hotmail.com", "<h1>Test</h1>", "HackTues10")
-    return "okay", 200
-
 @app.route("/profiles/me", methods=['GET'], endpoint="show_profile")
 @HandleResponse
+@GetJSONBody
 @VerifyToken
 def show_profile():
-    return GetByModel("ri_profile")
+    profile = GetByModel("ri_profile")
+    del profile["password"]
+    return profile
 
 @app.route('/subjects/<int:subject_id>/posts', methods=['GET'], endpoint="show_posts")
 @HandleResponse
+@GetJSONBody
 @VerifyToken
 @Exists("subject")
 @GetBy("posts", "subject_id", "path", assertive=False)
 def show_posts():
     return GetByModel("posts")
 
-@app.route('/subject/<int:subject_id>/posts', methods=['POST'], endpoint="create_post")
+@app.route('/subjects/<int:subject_id>/posts', methods=['POST'], endpoint="create_post")
 @HandleResponse
+@GetJSONBody
 @ValidateRequest
 @VerifyToken
 @VerifyRole("teacher")
+@StoreFile
 @Create("posts")
 def create_post():
-    return
+    return True, 201
 
 
 if __name__ == '__main__':

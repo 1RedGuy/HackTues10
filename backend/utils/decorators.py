@@ -11,16 +11,15 @@ from utils.functions.token import verify_token
 from database.index import create_new_record, get_by_id, get_by_val
 from utils.errors.NotFound import NotFoundError
 from mail.index import Email_Service
+from werkzeug.utils import secure_filename
+import os
+from utils.functions.allowed_file import allowed_file
 
 def HandleResponse(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
 		# try: 
-			if request.method != "GET" and request.method != "DELETE":
-				body = request.get_json()
-				if body.get("list") != None:
-					body = body["list"]
-				request.environ.update({"request_body": body})
+			
 			(output, status_code) = func(*args, **kwargs)
 			return jsonify({"response": output}), status_code
 		
@@ -189,22 +188,32 @@ def ValidateBodyRoles(role):
 					raise ValidationError(f"Profile with id = {id} is not {role}")
 			return func(*args, **kwargs)
 		return wrapper
-	return decorator		
-		
-# def ValidateBodyRows(func):
-# 	@wraps(func)
-# 	def wrapper(*args, **kwargs):
-# 		request_body = request.environ.get("request_body")
+	return decorator
 
-#def ModelResponse(func):
-#	@wraps(func)
-#	def wrapper(*args, **kwargs):
-#		model_service = Model_Service(name="Example Assistant", instructions="End every sentence with okay!", tools=["text"])
-#		message_response = model_service.input_message("Hello, world!", upload_file=False)
-#		return message_response, 200
-#	return wrapper
+def StoreFile(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		if 'files[]' not in request.files:
+			raise NotFoundError("No file!")
 
-				
-		
-		
-		
+		files = request.files.getlist('files[]')
+
+		for file in files:
+			if file and allowed_file(file.filename):
+				filename = secure_filename(file.filename)
+				file.save(os.path.join("/backend/public", filename))
+			else:
+				raise NotFoundError("No file!")
+		return func(*args, **kwargs)
+	return wrapper
+	
+def GetJSONBody(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		if request.method != "GET" and request.method != "DELETE":
+			body = request.get_json()
+			if body.get("list") != None:
+				body = body["list"]
+			request.environ.update({"request_body": body})
+		return func(*args, **kwargs)
+	return wrapper
