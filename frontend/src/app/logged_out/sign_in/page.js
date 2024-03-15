@@ -22,7 +22,7 @@ export default function SignIn() {
       Router.push("../../admin");
     } catch (error) {
       console.error("Error:", error);
-      return <h1 className={styles.error}>Error</h1>;
+     
     }
   };
 

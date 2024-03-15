@@ -21,7 +21,6 @@
 
 .form:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Hover shadow effect */
 }
 
 .label {
@@ -37,6 +36,30 @@
     border-radius: 5px;
 }
 
+.select {
+    /* Apply the same styling to .select as .input */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #0094fe;
+    margin-bottom: 3vh;
+    border-radius: 5px;
+    width: calc(100% - 16px);
+    /* Adjust width to account for padding */
+    font-size: 16px;
+    /* Ensure text size is consistent */
+    color: #333;
+    /* Text color */
+    outline: none;
+    /* Remove focus outline */
+}
+
+.select:focus,
+/* Add focus styles specific to select elements */
+.input:focus {
+    border-color: #66c2ff;
+    box-shadow: 0 0 0 2px rgba(102, 194, 255, 0.5);
+    /* Soft glow effect */
+}
 .button {
     padding: 10px;
     background-color: #0077cc;
@@ -48,12 +71,10 @@
 
 .button:hover {
     background-color: #66c2ff;
-    /* Hover color */
 }
 
 .button:active {
     transform: translateY(1px);
-    /* Click effect */
 }
 
 .error {

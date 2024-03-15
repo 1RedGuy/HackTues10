@@ -1,7 +1,6 @@
 "use client";
 import Cookies from "js-cookie";
 import { useState } from "react";
-S;
 import SetState from "../../../utils/setState";
 import { SignUpRequest } from "../../../network/auth";
 import styles from "./sign_up.module.css";
@@ -23,7 +22,6 @@ export default function SignUp() {
       Router.push("../../logged_in/admin");
     } catch (error) {
       console.error("Error:", error);
-      return <h1>Error</h1>;
     }
   };
 
