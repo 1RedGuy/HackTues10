@@ -166,6 +166,7 @@ def VerifyPassword(func):
 def GeneratePassword(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
+		email_service = Email_Service()
 		request_body = request.environ.get("request_body")
 		for element in request_body:
 			generated_password = generate_password()
@@ -189,4 +190,21 @@ def ValidateBodyRoles(role):
 			return func(*args, **kwargs)
 		return wrapper
 	return decorator		
+		
+# def ValidateBodyRows(func):
+# 	@wraps(func)
+# 	def wrapper(*args, **kwargs):
+# 		request_body = request.environ.get("request_body")
+
+#def ModelResponse(func):
+#	@wraps(func)
+#	def wrapper(*args, **kwargs):
+#		model_service = Model_Service(name="Example Assistant", instructions="End every sentence with okay!", tools=["text"])
+#		message_response = model_service.input_message("Hello, world!", upload_file=False)
+#		return message_response, 200
+#	return wrapper
+
+				
+		
+		
 		
