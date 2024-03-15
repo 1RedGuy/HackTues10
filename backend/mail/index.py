@@ -4,15 +4,17 @@ from email.mime.text import MIMEText
 
 smtp_server = os.getenv("SMTP_SERVER")
 sender_email = os.getenv("SENDER_EMAIL")
-port = 465
-password = os.getenv("PASSWORD")
+port = 587
+password = os.getenv("SMTP_PASSWORD")
 
 context = ssl.create_default_context()
 
 class Email_Service():
     def __init__(self):
-        server = smtplib.SMTP_SSL(smtp_server,port)
+        server = smtplib.SMTP(smtp_server,port)
+        server.starttls(context=context)
         server.ehlo()
+        print(sender_email, password)
         server.login(sender_email, password)
         print("Email server connected")
         self.server = server

@@ -67,7 +67,7 @@ def create_profile():
 @GetJSONBody
 @VerifyToken
 def get_my_subjects():
-    return GetMySubjects()
+    return GetMySubjects(), 200
 
 @app.route("/subjects", methods=["POST"], endpoint = "create_subject")
 @HandleResponse
@@ -97,7 +97,7 @@ def attach_students(subject_id):
 def show_profile():
     profile = GetByModel("ri_profile")
     del profile["password"]
-    return profile
+    return profile, 200
 
 @app.route('/subjects/<int:subject_id>/posts', methods=['GET'], endpoint="show_posts")
 @HandleResponse
@@ -110,12 +110,10 @@ def show_posts():
 
 @app.route('/subjects/<int:subject_id>/posts', methods=['POST'], endpoint="create_post")
 @HandleResponse
-@GetJSONBody
-@ValidateRequest
 @VerifyToken
 @VerifyRole("teacher")
 @StoreFile
-@Create("posts")
+# @Create("posts")
 def create_post():
     return True, 201
 

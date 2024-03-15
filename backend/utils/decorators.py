@@ -201,7 +201,7 @@ def StoreFile(func):
 		for file in files:
 			if file and allowed_file(file.filename):
 				filename = secure_filename(file.filename)
-				file.save(os.path.join("/backend/public", filename))
+				file.save(os.getcwd() + os.path.join("\\public", filename))
 			else:
 				raise NotFoundError("No file!")
 		return func(*args, **kwargs)

@@ -51,7 +51,7 @@ class SubjectSchema(SQLAlchemySchema):
     id = auto_field()
     name = auto_field()
 
-class Students_to_Subject(Base):
+class Student_to_Subject(Base):
     __tablename__ = "student_to_subject"
     id: Mapped[int] = mapped_column(primary_key=True)
     student_id : Mapped[int] = mapped_column(ForeignKey("profile.id"))

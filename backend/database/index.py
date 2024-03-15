@@ -1,12 +1,12 @@
 from sqlalchemy import create_engine, select, delete
 from sqlalchemy.orm import Session
-from database.dbmodels import Profile, Subject, Students_to_Subject, ProfileSchema, SubjectSchema, Posts, PostsSchema
+from database.dbmodels import Profile, Subject, Student_to_Subject, ProfileSchema, SubjectSchema, Posts, PostsSchema
 from utils.errors.NotFound import NotFoundError
 import os
 
 engine = create_engine(os.getenv("DATABASE_URI"), echo=True)
 
-models = {"profile": Profile, "subject":Subject, "student_to_subject":Students_to_Subject, "posts": Posts}
+models = {"profile": Profile, "subject":Subject, "student_to_subject":Student_to_Subject, "posts": Posts}
 schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema, "posts_schema": PostsSchema}
 
 def create_new_record(model_name, model_dict, seraialize=True):
@@ -67,10 +67,10 @@ def delete_record(model_name, id):
 
 def get_students_subjects(student_id):
     with Session(engine) as session:
-        stmt = select(Students_to_Subject).where(Students_to_Subject.student_id == student_id).join(Subject, Subject.id == Students_to_Subject.subject_id)
+        stmt = select(Student_to_Subject).where(Student_to_Subject.student_id == student_id).join(Subject, Subject.id == Student_to_Subject.subject_id)
         scalars = []
 
-        for res in stmt:
-            scalars.append(SubjectSchema().dump(session.scalars(res)))
+        for res in session.scalars(stmt):
+            scalars.append(SubjectSchema().dump(session.scalar(res)))
 
         return scalars
