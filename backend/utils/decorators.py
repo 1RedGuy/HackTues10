@@ -232,10 +232,9 @@ def Mp3ToPptx(func):
 		file_url = request.environ.get("file_url")
 		pptx_url = file_url.replace(".mp3", ".pptx")
 
-		# service = Model_Service()
-		# text = service.mp3_to_json(file_url)
+		service = Model_Service()
+		text = service.mp3_to_json(file_url)
 
-		text = 'json```[{ "TITLE": "Gosho1", "TEXT": { "TYPE": "TEXT", "VALUE": "GoshoBody" } }]```'
 		text = text.replace("json```", "")
 		text = text.replace("```", "")
 
