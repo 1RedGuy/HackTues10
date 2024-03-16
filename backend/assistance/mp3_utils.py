@@ -46,6 +46,8 @@ class MP3_Service():
     def speech_to_text(self):
         client = OpenAI()
         self.coversation_target_path = os.path.join(os.getcwd(), "conversation.txt")
+        with open(self.coversation_target_path, "a") as file:
+            file.write("$$$THIS IS THE CONVERSATION TRANSCRIPT$$$ \n\n\n")
         for chunk in self.chunk_paths:
             audio_file = open(chunk, "rb")
             transcription = client.audio.transcriptions.create(
