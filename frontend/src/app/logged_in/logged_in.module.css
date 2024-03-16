@@ -1,16 +1,125 @@
 .container {
     display: flex;
         flex-direction: column;
-        background-color: #eaf2f8;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         justify-content: center;
         align-items: center;
+        width: 100vw;
+        height: 100vh;
+       
+}
+.select {
+    /* Apply the same styling to .select as .input */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #0094fe;
+    margin-bottom: 3vh;
+    border-radius: 5px;
+    width: calc(100% - 16px);
+    /* Adjust width to account for padding */
+    font-size: 16px;
+    /* Ensure text size is consistent */
+    color: #333;
+    /* Text color */
+    outline: none;
+    /* Remove focus outline */
+}
+
+.select:focus,
+/* Add focus styles specific to select elements */
+.input:focus {
+    border-color: #66c2ff;
+    box-shadow: 0 0 0 2px rgba(102, 194, 255, 0.5);
+    /* Soft glow effect */
+}
+.posts {
+    display: flex;
+        flex-direction: row;
     
-        width: 40vw;
-        height: 30vh;
-        margin-top: 30vh;
-        margin-left: 30vw;
+        
+}
+.post {
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    display: flex;
+        flex-direction: column;
+       
+            align-items: center;
+        background-color: #eaf2f8;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            width: 80vw;
+                height: 80vh;
+
+
+}
+.header_container {
+    background-color: #eaf2f8;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+.header {
+    color: rgb(0, 145, 255);
+}
+.form {
+    width: 50vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #eaf2f8;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+}
+
+.form:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Hover shadow effect */
+}
+
+.label {
+    color: #0077cc;
+    font-weight: bold;
+}
+
+.input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #0077cc;
+    margin-bottom: 1vh;
+    border-radius: 5px;
+}
+
+.button {
+    padding: 10px;
+    background-color: #0077cc;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1vh;
+    width: 20vw;
+}
+
+.button:hover {
+    background-color: #66c2ff;
+    /* Hover color */
+}
+
+.button:active {
+    transform: translateY(1px);
+    /* Click effect */
+}
+
+.error {
+    color: red;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

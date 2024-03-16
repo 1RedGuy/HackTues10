@@ -1,0 +1,36 @@
+.container {
+        padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px px rgba(0, 0, 0, 0.1);
+            background-color: #eaf2f8;
+            border: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 30vw;
+            height:40vh ;
+            margin-top: 30vh;
+            margin-left: 35vw;
+
+}
+.button {
+    padding: 10px;
+    background-color: #0077cc;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1vh;
+    width: 20vw;
+}
+
+.button:hover {
+    background-color: #66c2ff;
+    /* Hover color */
+}
+
+.button:active {
+    transform: translateY(1px);
+    /* Click effect */
+}

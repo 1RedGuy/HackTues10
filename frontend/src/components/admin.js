@@ -4,6 +4,7 @@ import { useState } from "react";
 import SetState from "../utils/setState";
 import AddObject from "../utils/addObject";
 import { CreateSubject, Connect } from "../network/admin";
+import Cookies from "js-cookie";
 
 export function UserForm({ prop, UpdateProp, labels }) {
   const initialState = {
@@ -79,16 +80,17 @@ export function UserForm({ prop, UpdateProp, labels }) {
 export function SubjectForm({ prop, UpdateProp, users }) {
   const initialState = {
     name: "",
-    teacher_id: 0,
+    teacher_id: "",
   };
-
+  const jwtToken = Cookies.get("jwtToken");
   const [state, updateState] = useState(initialState);
   const [error, setError] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    state.teacher_id = parseInt(state.teacher_id);
     try {
-      await CreateSubject(state);
+      await CreateSubject(state, jwtToken);
       UpdateProp(state);
     } catch (err) {
       setError(
@@ -108,9 +110,7 @@ export function SubjectForm({ prop, UpdateProp, users }) {
             name="name"
             type="text"
             value={state.name}
-            onChange={(e) =>
-              SetState(state, "name", updateState, e.target.value)
-            }
+            onChange={(e) => updateState({ ...state, name: e.target.value })}
           />
         </div>
         <div>
@@ -121,11 +121,12 @@ export function SubjectForm({ prop, UpdateProp, users }) {
             name="userSelect"
             value={state.teacher_id}
             onChange={(e) => {
-              SetState(state, "teacher_id", updateState, e.target.value);
+              updateState({ ...state, teacher_id: e.target.value });
             }}
           >
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
+            <option value="">Select a teacher</option>
+            {users.map((user, index) => (
+              <option key={index} value={user.id}>
                 {user.name}
               </option>
             ))}
@@ -142,17 +143,17 @@ export function SubjectForm({ prop, UpdateProp, users }) {
 
 export function StudentForm({ UpdateState, AllUsers, AllSubjects }) {
   const initialState = {
-    subject_id: null,
+    subject_id: "",
     students_ids: {
       student_ids: [],
     },
   };
-
+  const jwtToken = Cookies.get("jwtToken");
   const [state, updateState] = useState(initialState);
   const [error, setError] = useState("");
 
   const handleSubjectChange = (e) => {
-    const subjectId = e.target.value ? Number(e.target.value) : null;
+    const subjectId = e.target.value ? e.target.value : null;
     updateState((prevState) => ({ ...prevState, subject_id: subjectId }));
   };
 
@@ -169,9 +170,13 @@ export function StudentForm({ UpdateState, AllUsers, AllSubjects }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    updateState((prevState) => ({
+      ...prevState,
+      subject_id: parseInt(subject_id),
+    }));
     try {
       UpdateState(state);
-      await Connect(state.subject_id, state.students_ids);
+      await Connect(state.subject_id, state.students_ids, jwtToken);
     } catch (err) {
       setError("An error occurred. Please try again.");
       console.error(err);
@@ -191,8 +196,8 @@ export function StudentForm({ UpdateState, AllUsers, AllSubjects }) {
             value={state.subject_id || ""}
           >
             <option value="">Select a subject</option>
-            {AllSubjects.map((subject) => (
-              <option key={subject.id} value={subject.id}>
+            {AllSubjects.map((subject, index) => (
+              <option key={index} value={subject.id}>
                 {subject.name}
               </option>
             ))}

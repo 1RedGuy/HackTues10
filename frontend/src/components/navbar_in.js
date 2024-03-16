@@ -4,6 +4,9 @@ import styles from "./navbar.module.css";
 export default function Navbar() {
   return (
     <nav className={styles.navbar}>
+      <Link href="/logged_in" className={styles.link}>
+        Home
+      </Link>
       <Link href="/logged_in/my_subjects" className={styles.link}>
         My Subjects
       </Link>

@@ -4,25 +4,27 @@ import { useState } from "react";
 import SetState from "../../../utils/setState";
 import { SignInRequest } from "../../../network/auth";
 import styles from "./sign_in.module.css";
-import Router from "router";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const [state, updateState] = useState({
-    name: "",
     email: "",
     password: "",
-    passwordConfirm: "",
   });
+
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const jwtToken = SignInRequest(state);
-      Cookies.set("jwtToken", jwtToken, { expires: 0.5 });
-      Router.push("../../admin");
+      const response = await SignInRequest(state);
+      if (response.response != null && response.response != undefined) {
+        const jwtToken = response.response;
+        Cookies.set("jwtToken", jwtToken, { expires: 0.5 });
+        router.push("/logged_in");
+      }
     } catch (error) {
       console.error("Error:", error);
-     
     }
   };
 

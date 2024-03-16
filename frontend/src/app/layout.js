@@ -10,6 +10,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <title>EduNova</title>
+      </head>
       <body>
         <main>{children}</main>
       </body>

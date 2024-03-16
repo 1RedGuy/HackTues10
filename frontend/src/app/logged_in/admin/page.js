@@ -8,6 +8,7 @@ import {
   StudentForm,
 } from "../../../components/admin";
 import styles from "./admin.module.css";
+import Cookies from "js-cookie";
 
 export default function Admin_page() {
   const [isComponentVisible, setComponentVisible] = useState({
@@ -20,7 +21,7 @@ export default function Admin_page() {
   const [subject, updateSubject] = useState({ name: "", teacher_id: 0 });
   const [allUsers, updateAllUsers] = useState([]);
   const [allSubjects, updateAllSubject] = useState([]);
-  const [getRole, updateRole] = useState("");
+
   const [students, updateStudents] = useState({
     subject_id: null,
     students_ids: {
@@ -28,6 +29,7 @@ export default function Admin_page() {
     },
   });
   const [error, setError] = useState("");
+  const jwtToken = Cookies.get("jwtToken");
 
   function setVisible(prop) {
     setComponentVisible((prev) => ({ ...prev, [prop]: true }));
@@ -37,30 +39,36 @@ export default function Admin_page() {
     setComponentVisible((prev) => ({ ...prev, [prop]: false }));
   }
 
-  const getUsers = async () => {
+  const getUsers = async (role) => {
     try {
-      const response = await GetUser(getRole);
-      updateAllUsers(response);
+      const response = await GetUser(role, jwtToken);
+      updateAllUsers(response.response);
     } catch (error) {
       setError("Failed to fetch users. Please try again later.");
       console.error("Error fetching users:", error);
     }
   };
 
-  const getSubjects = async () => {
-    try {
-      const response = await GetSubject(getRole);
-      updateAllSubject(response);
-    } catch (error) {
-      setError("Failed to fetch subjects. Please try again later.");
-      console.error("Error fetching subjects:", error);
+  useEffect(() => {
+    const getSubjects = async () => {
+      try {
+        const response = await GetSubject(jwtToken);
+        updateAllSubject(response.response);
+      } catch (error) {
+        setError("Failed to fetch subjects. Please try again later.");
+        console.error("Error fetching subjects:", error);
+      }
+    };
+
+    if (jwtToken) {
+      getSubjects();
     }
-  };
+  }, []);
 
   const handleCreateUsers = async () => {
     try {
-      await CreateUser(users);
       setInvisible("first");
+      return await CreateUser(users, jwtToken);
     } catch (error) {
       setError("Failed to create user. Please try again later.");
       console.error("Error creating user:", error);
@@ -107,7 +115,6 @@ export default function Admin_page() {
           className={styles.button}
           onClick={() => {
             setVisible("second");
-            getUsers();
           }}
         >
           See all profiles
@@ -118,7 +125,7 @@ export default function Admin_page() {
           <button
             className={styles.button}
             onClick={() => {
-              updateRole("theacher");
+              getUsers("teacher");
             }}
           >
             Teachers
@@ -126,13 +133,14 @@ export default function Admin_page() {
           <button
             className={styles.button}
             onClick={() => {
-              updateRole("student");
+              getUsers("student");
             }}
           >
             Students
           </button>
 
           <AllUsers users={allUsers} />
+
           <button
             className={styles.button}
             onClick={() => {
@@ -147,9 +155,8 @@ export default function Admin_page() {
         <button
           className={styles.button}
           onClick={() => {
+            getUsers("teacher");
             setVisible("third");
-            updateRole("teacher");
-            getUsers();
           }}
         >
           Create subject
@@ -176,10 +183,8 @@ export default function Admin_page() {
         <button
           className={styles.button}
           onClick={() => {
+            getUsers("student");
             setVisible("fourth");
-            updateRole("student");
-            getUsers();
-            getSubjects();
           }}
         >
           Attach students
