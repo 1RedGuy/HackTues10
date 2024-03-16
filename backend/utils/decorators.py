@@ -236,8 +236,7 @@ def Mp3ToPptx(func):
 		# text = service.mp3_to_json(file_url)
 
 		text = 'json```[{ "TITLE": "Gosho1", "TEXT": { "TYPE": "TEXT", "VALUE": "GoshoBody" } }]```'
-		text = text.replace("json```", "")
-		text = text.replace("```", "")
+		text = text.split("```json")[1].replace("```", "")
 
 		jsoned = json.loads(text)
 		generate_presentation(jsoned, pptx_url)
