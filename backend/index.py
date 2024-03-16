@@ -1,9 +1,11 @@
 from dotenv import load_dotenv
 import os
+from flask import Flask, request, send_from_directory
 load_dotenv()
 if os.getenv("ENV") == "PREP":
+  app = Flask(__name__)
+  app.run()
   exit(0)
-from flask import Flask, request, send_from_directory
 from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody, Mp3ToPptx, Clean, FilterPassword
 from utils.functions.token import generate_token
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
