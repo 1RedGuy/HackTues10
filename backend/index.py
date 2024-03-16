@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
+import os
 load_dotenv()
-
+if os.getenv("ENV") == "PREP":
+  exit(0)
 from flask import Flask, request, send_from_directory
 from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody, Mp3ToPptx, Clean, FilterPassword
 from utils.functions.token import generate_token
@@ -9,7 +11,6 @@ from utils.functions.info import can_sign_up
 from utils.decorators import HandleResponse
 from mail.index import Email_Service
 from flask_cors import CORS
-import os
 from utils.functions.password import hash_password
 
 app = Flask(__name__)
