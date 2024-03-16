@@ -2,13 +2,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, request, send_from_directory
-from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody, Mp3ToPptx, Clean
+from utils.decorators import HandleResponse, ValidateRequest, ValidateSignUp, Create, SignUpAccess, VerifyRole, VerifyToken, GetBy, Exists, VerifyPassword, GeneratePassword, ValidateBodyRoles, StoreFile, GetJSONBody, Mp3ToPptx, Clean, FilterPassword
 from utils.functions.token import generate_token
 from utils.functions.controllers import GetByModel, GetMySubjects, AttachStudents
 from utils.functions.info import can_sign_up
 from utils.decorators import HandleResponse
 from mail.index import Email_Service
 from flask_cors import CORS
+import os
+from utils.functions.password import hash_password
 
 app = Flask(__name__)
 CORS(app)
@@ -49,6 +51,7 @@ def sign_in():
 @VerifyToken
 @VerifyRole("admin")
 @GetBy("profile", "role", "args", False)
+@FilterPassword
 def get_profiles():
     return GetByModel("profiles"), 200
 
@@ -121,7 +124,7 @@ def show_posts():
 def create_post():
     return True, 201
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    host = os.getenv("HOST")
+    app.run(host=host, debug=True)
 

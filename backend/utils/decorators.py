@@ -256,3 +256,12 @@ def Clean(func):
 	def wrapper(*args, **kwargs):
 		return func()
 	return wrapper
+
+def FilterPassword(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		profiles = request.environ.get("profiles")
+		for profile in profiles:
+			del profile["password"]
+		return func(*args, **kwargs)
+	return wrapper
