@@ -14,7 +14,7 @@ from mail.index import Email_Service
 from werkzeug.utils import secure_filename
 import os
 from utils.functions.allowed_file import allowed_file
-from assistance.utils import Model_Service
+from assistance.model_utils import Model_Service
 import json
 from utils.functions.presentation import generate_presentation
 
@@ -205,7 +205,7 @@ def StoreFile(func):
 		for file in files:
 			if file and allowed_file(file.filename):
 				filename = secure_filename(file.filename)
-				url = os.getcwd() + os.path.join("\\public", filename)
+				url = os.path.join(os.getcwd(), "public", filename)
 				file.save(url)
 				break
 			else:
@@ -232,10 +232,13 @@ def Mp3ToPptx(func):
 		file_url = request.environ.get("file_url")
 		pptx_url = file_url.replace(".mp3", ".pptx")
 
-		service = Model_Service()
-		text = service.mp3_to_json(file_url)
-
-		text = text.split("```json")[1].replace("```", "")
+		service = Model_Service(file_url, os.getcwd())
+		text = service.mp3_to_json("Im sending you a transcript of a school lecture. Summarize it for me. Generate json in the correct format.")
+		print(text)
+		if "typescript" in text: 
+			text = text.split("```typescript")[1].replace("```", "")
+		else:
+			text = text.split("```json")[1].replace("```", "")
 
 		jsoned = json.loads(text)
 		generate_presentation(jsoned, pptx_url)

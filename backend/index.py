@@ -126,6 +126,7 @@ def show_posts():
 @Clean
 def create_post():
     return True, 201
+print(hash_password("123456"))
 
 if __name__ == '__main__':
     host = os.getenv("HOST")

@@ -3,6 +3,7 @@ from openai import OpenAI
 from pydub import AudioSegment
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 class MP3_Service():
@@ -60,3 +61,5 @@ class MP3_Service():
                 file.write(transcription + "\n")
         return self.coversation_target_path
         
+#a = Model_Service("/Users/vladi/Desktop/Programming/HackTues10/backend/public/Mechanics.mp3", "/Users/vladi/Desktop/Programming/HackTues10/backend/conversation_files/")
+#print(a.mp3_to_json("Im sending you a transcript of a school lecture. Summarize it for me. Generate json in the correct format."))
