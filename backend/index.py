@@ -128,6 +128,5 @@ def create_post():
     return True, 201
 
 if __name__ == '__main__':
-    host = os.getenv("HOST")
-    app.run(host=host, debug=True, port=8080)
+    app.run(port=8080, debug=os.getenv("ENV") == "DEV")
 
