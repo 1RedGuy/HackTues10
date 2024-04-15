@@ -77,6 +77,14 @@ def create_profile():
 def get_my_subjects():
     return GetMySubjects(), 200
 
+@app.route('/subjects', methods=['GET'], endpoint="get_subjects")
+@HandleResponse
+@VerifyToken
+@VerifyRole("admin")
+@GetBy("subject", assertive=False)
+def get_subjects():
+    return GetByModel("subjects"), 200
+
 @app.route("/subjects", methods=["POST"], endpoint = "create_subject")
 @HandleResponse
 @GetJSONBody
@@ -87,7 +95,7 @@ def get_my_subjects():
 def create_subject():
     return True, 201
 
-@app.route("/subject/<int:subject_id>/students", methods=["POST"], endpoint = "attach_students")
+@app.route("/subjects/<int:subject_id>/students", methods=["POST"], endpoint = "attach_students")
 @HandleResponse
 @GetJSONBody
 @ValidateRequest

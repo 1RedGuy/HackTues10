@@ -3,8 +3,9 @@ import styles from "./admin_components.module.css";
 import { useState } from "react";
 import SetState from "../utils/setState";
 import AddObject from "../utils/addObject";
-import { CreateSubject, Connect } from "../network/admin";
+import { CreateSubject, AttachStudents } from "../network/admin";
 import Cookies from "js-cookie";
+import { all } from "axios";
 
 export function UserForm({ prop, UpdateProp, labels }) {
   const initialState = {
@@ -143,7 +144,7 @@ export function SubjectForm({ prop, UpdateProp, users }) {
 
 export function StudentForm({ UpdateState, AllUsers, AllSubjects }) {
   const initialState = {
-    subject_id: "",
+    subject_id: AllSubjects[0] ? AllSubjects[0].id : "",
     students_ids: {
       student_ids: [],
     },
@@ -172,11 +173,11 @@ export function StudentForm({ UpdateState, AllUsers, AllSubjects }) {
     setError("");
     updateState((prevState) => ({
       ...prevState,
-      subject_id: parseInt(subject_id),
+      subject_id: parseInt(state.subject_id),
     }));
     try {
       UpdateState(state);
-      await Connect(state.subject_id, state.students_ids, jwtToken);
+      await AttachStudents(state.subject_id, state.students_ids, jwtToken);
     } catch (err) {
       setError("An error occurred. Please try again.");
       console.error(err);
@@ -193,9 +194,8 @@ export function StudentForm({ UpdateState, AllUsers, AllSubjects }) {
             id="subjectSelect"
             name="subjectSelect"
             onChange={handleSubjectChange}
-            value={state.subject_id || ""}
+            value={state.subject_id || (AllSubjects[0] ? AllSubjects[0].id : "")}
           >
-            <option value="">Select a subject</option>
             {AllSubjects.map((subject, index) => (
               <option key={index} value={subject.id}>
                 {subject.name}

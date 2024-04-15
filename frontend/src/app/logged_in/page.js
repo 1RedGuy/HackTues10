@@ -18,14 +18,18 @@ export default function Home() {
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data.file[0]);
+    console.log(data.file[0]);  
     const formData = new FormData();
     formData.append("files[]", data.file[0]);
     setSubjectId(parseInt(subject_id));
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/subjects/${subject_id}/posts`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}subjects/${subject_id}/posts`,
       {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Access-Control-Allow-Origin': '*', 
+        },
         body: formData,
       }
     ).then((res) => res.json());
@@ -115,7 +119,7 @@ export default function Home() {
             {subjects.map((subject, index) => {
               <div className={styles.post} key={index}>
                 <h2 className={styles.header}>{subject.name}</h2>
-                <link></link>
+                <link>{subject.link}</link>
               </div>;
             })}
           </div>

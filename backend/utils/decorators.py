@@ -120,14 +120,15 @@ def SignUpAccess(func):
 		
 	return wrapper
 
-def GetBy(model_name, by, loc, assertive=True, listed=True):
+def GetBy(model_name, by=None, loc=None, assertive=True, listed=True):
 	def decorator(func):
 		@wraps(func)
 		def wrapper(*args, **kwargs):
 			print(loc)
+			print(model_name)
 			if loc == None and by == None:
 				docs = get_by_val(model_name, assertive=assertive)
-			if loc == "args":
+			elif loc == "args":
 				docs = get_by_val(model_name, by, request.args.get(by), assertive)
 			elif loc == "body":
 				docs = get_by_val(model_name, by, request.environ.get("request_body")[by], assertive)
@@ -137,7 +138,7 @@ def GetBy(model_name, by, loc, assertive=True, listed=True):
 			if not listed:
 				request.environ.update({model_name: docs[0]})
 				return func(*args, **kwargs)
-			
+			print(docs)
 			request.environ.update({model_name + "s": docs})
 			return func(*args, **kwargs)
 		return wrapper
@@ -186,7 +187,7 @@ def ValidateBodyRoles(role):
 		@wraps(func)
 		def wrapper(*args, **kwargs):
 			request_body = request.environ.get("request_body")
-			for element in request_body:
+			for element in request_body[role + "_ids"]:
 				profile = get_by_id("profile",element[role + "_id"])
 				if profile["role"] != role:
 					raise ValidationError(f"Profile with id = {id} is not {role}")

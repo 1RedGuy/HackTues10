@@ -21,7 +21,7 @@ def create_new_record(model_name, model_dict, seraialize=True):
         if seraialize:
             return schemas[model_name]().dump(new_record)
 
-def get_by_val(model_name, by, val, assertive=True):
+def get_by_val(model_name, by=None, val=None, assertive=True):
     with Session(engine) as session:
         models[model_name].__table__.create(bind=engine, checkfirst=True)
         if by == None and val==None:

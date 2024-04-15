@@ -13,7 +13,7 @@ def GetMySubjects():
     return get_students_subjects(ri_profile["id"])
     
 def AttachStudents(subject_id):
-    students = request.environ.get("request_body")
+    students = request.environ.get("request_body")["student_ids"]
     print(students)
     for student in students:
         create_new_record("student_to_subject", {"student_id": student["student_id"], "subject_id": subject_id}, False)

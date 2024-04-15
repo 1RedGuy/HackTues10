@@ -3,10 +3,10 @@ import axios from "axios";
 export async function CreateUser(users, token) {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/profiles`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}profiles`,
       { list: users },
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, "Access-Control-Allow-Origin": "*", },
       }
     );
     return response.data;
@@ -20,9 +20,9 @@ export async function CreateUser(users, token) {
 export async function GetUser(role, token) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/profiles?role=${role}`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}profiles?role=${role}`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, "Access-Control-Allow-Origin": "*",},
       }
     );
     console.log(response.data);
@@ -36,10 +36,10 @@ export async function GetUser(role, token) {
 export async function CreateSubject(subject, token) {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/subjects`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}subjects`,
       subject,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, "Access-Control-Allow-Origin": "*", },
       }
     );
     return response.data;
@@ -48,12 +48,12 @@ export async function CreateSubject(subject, token) {
     throw error;
   }
 }
-export async function GetSubject(token) {
+export async function GetSubjects(token) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/subjects/me`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}subjects`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, "Access-Control-Allow-Origin": "*", },
       }
     );
     return response.data;
@@ -63,13 +63,14 @@ export async function GetSubject(token) {
   }
 }
 
-export async function Connect(subject_id, students_ids, token) {
+
+export async function AttachStudents(subject_id, students_ids, token) {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/subject/${subject_id}`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}subjects/${subject_id}/students`,
       students_ids,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, "Access-Control-Allow-Origin": "*", },
       }
     );
     return response.data;

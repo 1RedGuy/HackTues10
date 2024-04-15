@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { CreateUser, GetSubject, GetUser } from "../../../network/admin";
+import { CreateUser, GetSubjects, GetUser } from "../../../network/admin";
 import {
   UserForm,
   SubjectForm,
@@ -52,7 +52,7 @@ export default function Admin_page() {
   useEffect(() => {
     const getSubjects = async () => {
       try {
-        const response = await GetSubject(jwtToken);
+        const response = await GetSubjects(jwtToken);
         updateAllSubject(response.response);
       } catch (error) {
         setError("Failed to fetch subjects. Please try again later.");
