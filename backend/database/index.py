@@ -1,18 +1,17 @@
 from sqlalchemy import create_engine, select, delete
 from sqlalchemy.orm import Session
-from database.dbmodels import Profile, Subject, Student_to_Subject, ProfileSchema, SubjectSchema, Posts, PostsSchema
+from database.dbmodels import Profile, Subject, Student_to_Subject, ProfileSchema, SubjectSchema, Post, PostsSchema
 from utils.errors.NotFound import NotFoundError
 import os
 
-engine = create_engine(os.getenv("DATABASE_URI"), echo=True)
+engine = create_engine(os.getenv("DATABASE_URI"), echo=False)
 
-models = {"profile": Profile, "subject":Subject, "student_to_subject":Student_to_Subject, "posts": Posts}
-schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema, "posts": PostsSchema}
+models = {"profile": Profile, "subject":Subject, "student_to_subject":Student_to_Subject, "post": Post}
+schemas = {"profile": ProfileSchema, "subject": SubjectSchema, "student_to_subject": SubjectSchema, "post": PostsSchema}
 
 def create_new_record(model_name, model_dict, seraialize=True):
     with Session(engine) as session:
         models[model_name].__table__.create(bind=engine, checkfirst=True)
-        print(model_dict)
         new_record = models[model_name](**model_dict)
 
         session.add(new_record)
@@ -32,8 +31,6 @@ def get_by_val(model_name, by=None, val=None, assertive=True):
         dumped_scalars = []
 
         exists = session.scalar(stmt.limit(1))
-
-        print(assertive)
 
         if exists:
             for res in session.scalars(stmt):

@@ -1,9 +1,16 @@
 "use client";
 import Cookies from "js-cookie";
 import styles from "./logged_in.module.css";
-import { createPost, getMyProfile, getMySubjects } from "../../network/user";
+import {
+  createPost,
+  getMyProfile,
+  getMySubjects,
+  GetPosts,
+} from "../../network/user";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import Loading from "@/components/loading/loading";
 
 export default function Home() {
   const [isTeacher, setIsTeacher] = useState(false);
@@ -13,27 +20,33 @@ export default function Home() {
   const [file, setFile] = useState(null);
   const [subjects, updateSubject] = useState([]);
   const [error, setError] = useState("");
-  const [posts, setPosts] = useState("");
+  const [posts, setPosts] = useState([]);
   const jwtToken = Cookies.get("jwtToken");
   const { register, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log(data.file[0]);  
+    console.log(data.file[0]);
     const formData = new FormData();
     formData.append("files[]", data.file[0]);
     setSubjectId(parseInt(subject_id));
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}subjects/${subject_id}/posts`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          'Access-Control-Allow-Origin': '*', 
-        },
-        body: formData,
-      }
-    ).then((res) => res.json());
-    alert(JSON.stringify(`${res.message}, status: ${res.status}`));
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}subjects/${subject_id}/posts`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: formData,
+        }
+      );
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     async function fetchRole() {
@@ -72,7 +85,25 @@ export default function Home() {
     }
   }, []);
 
-  return (
+  useEffect(() => {
+    const getPosts = async () => {
+      try {
+        const response = await GetPosts(jwtToken, subject_id);
+        setPosts(response.response);
+      } catch (error) {
+        setError("Failed to fetch posts. Please try again later.");
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    if (jwtToken) {
+      getPosts();
+    }
+  }, []);
+
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.container}>
       <div className={styles.content}>
         {isTeacher && (
@@ -112,16 +143,15 @@ export default function Home() {
             </form>
           </div>
         )}
-
         <div className={styles.container}>
-          <h1 className={styles.header}>Created posts</h1>
+          <h1 className={styles.header}>Posts</h1>
           <div className={styles.posts}>
-            {subjects.map((subject, index) => {
+            {posts.map((post, index) => (
               <div className={styles.post} key={index}>
-                <h2 className={styles.header}>{subject.name}</h2>
-                <link>{subject.link}</link>
-              </div>;
-            })}
+                <h2 className={styles.header}>{post.title}</h2>
+                <Link href={post.url}>Presentation</Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>

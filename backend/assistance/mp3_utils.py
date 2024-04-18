@@ -57,9 +57,6 @@ class MP3_Service():
                 response_format="text"
             )
             with open(self.coversation_target_path, "a") as file:
-                print(transcription)
                 file.write(transcription + "\n")
         return self.coversation_target_path
         
-#a = Model_Service("/Users/vladi/Desktop/Programming/HackTues10/backend/public/Mechanics.mp3", "/Users/vladi/Desktop/Programming/HackTues10/backend/conversation_files/")
-#print(a.mp3_to_json("Im sending you a transcript of a school lecture. Summarize it for me. Generate json in the correct format."))

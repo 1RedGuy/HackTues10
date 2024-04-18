@@ -22,15 +22,14 @@ from utils.functions.presentation import generate_presentation
 def HandleResponse(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		# try: 
-			
+		#try: 
 			(output, status_code) = func(*args, **kwargs)
 			return jsonify({"response": output}), status_code
 		
-		# except ValidationError as error:    
-		# 	return jsonify({"error": str(error)}), 400
-		# except Exception as error:
-		# 	return jsonify({"error": str(error)}), 500
+		#except ValidationError as error:
+			#return jsonify({"error": str(error)}), 400
+		#except Exception as error:
+			#return jsonify({"error": str(error)}), 500
 	return wrapper
 
 def ValidateRequest(func):
@@ -124,21 +123,20 @@ def GetBy(model_name, by=None, loc=None, assertive=True, listed=True):
 	def decorator(func):
 		@wraps(func)
 		def wrapper(*args, **kwargs):
-			print(loc)
-			print(model_name)
 			if loc == None and by == None:
 				docs = get_by_val(model_name, assertive=assertive)
 			elif loc == "args":
 				docs = get_by_val(model_name, by, request.args.get(by), assertive)
 			elif loc == "body":
 				docs = get_by_val(model_name, by, request.environ.get("request_body")[by], assertive)
+			elif loc == "path_relation":
+				docs = get_by_val(model_name, by, kwargs[by], assertive)
 			else:
 				docs = get_by_val(model_name, "id", kwargs[by + "_id"], assertive)
 
 			if not listed:
 				request.environ.update({model_name: docs[0]})
 				return func(*args, **kwargs)
-			print(docs)
 			request.environ.update({model_name + "s": docs})
 			return func(*args, **kwargs)
 		return wrapper
@@ -235,7 +233,6 @@ def Mp3ToPptx(func):
 
 		service = Model_Service(file_url, os.getcwd())
 		text = service.mp3_to_json("Im sending you a transcript of a school lecture. Summarize it for me. Generate json in the correct format.")
-		print(text)
 		if "typescript" in text: 
 			text = text.split("```typescript")[1].replace("```", "")
 		else:

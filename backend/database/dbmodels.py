@@ -57,8 +57,8 @@ class Student_to_Subject(Base):
     student_id : Mapped[int] = mapped_column(ForeignKey("profile.id"))
     subject_id : Mapped[int] = mapped_column(ForeignKey("subject.id"))
 
-class Posts(Base):
-    __tablename__ = "posts"
+class Post(Base):
+    __tablename__ = "post"
     id: Mapped[int] = mapped_column(primary_key=True)
     url: Mapped[str] = mapped_column(String(500))
     title: Mapped[str] = mapped_column(String(50))
@@ -66,7 +66,7 @@ class Posts(Base):
 
 class PostsSchema(SQLAlchemySchema):
     class Meta:
-        model = Posts
+        model = Post
         load_instance = True
 
     url = auto_field()

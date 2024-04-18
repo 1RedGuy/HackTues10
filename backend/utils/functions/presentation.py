@@ -5,9 +5,7 @@ from pptx.util import Inches, Pt
 def generate_presentation(presentation_json, file_url):
     prs = Presentation()
     layout = prs.slide_layouts[1]
-    print(presentation_json)
     for json_slide in presentation_json:
-        print(json_slide)
         slide = prs.slides.add_slide(layout)
         shapes = slide.shapes
 

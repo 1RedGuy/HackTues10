@@ -70,7 +70,7 @@ def get_profiles():
 def create_profile():
     return True, 201
 
-@app.route('/subjects/me', methods=['GET'], endpoint="get_my_subject")
+@app.route('/subjects/me', methods=['GET'], endpoint="get_my_subjects")
 @HandleResponse
 @GetJSONBody
 @VerifyToken
@@ -120,9 +120,10 @@ def show_profile():
 @GetJSONBody
 @VerifyToken
 @Exists("subject")
-@GetBy("posts", "subject_id", "path", assertive=False)
+@GetBy("post", "subject_id", "path_relation", assertive=False, listed=True)
+@Clean
 def show_posts():
-    return GetByModel("posts")
+    return GetByModel("posts"), 200
 
 @app.route('/subjects/<int:subject_id>/posts', methods=['POST'], endpoint="create_post")
 @HandleResponse
@@ -130,7 +131,7 @@ def show_posts():
 @VerifyRole("teacher")
 @StoreFile
 @Mp3ToPptx
-@Create("posts")
+@Create("post")    
 @Clean
 def create_post():
     return True, 201

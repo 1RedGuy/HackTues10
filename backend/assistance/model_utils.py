@@ -29,7 +29,6 @@ class Model_Service():
             purpose = "assistants"
         )
         files_id_list.append(conv_file.id)
-        print(files_id_list)
         
         if self.additional_data is True:
           data_file = self.client.files.create(

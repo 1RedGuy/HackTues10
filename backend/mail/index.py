@@ -14,9 +14,7 @@ class Email_Service():
         server = smtplib.SMTP(smtp_server,port)
         server.starttls(context=context)
         server.ehlo()
-        print(sender_email, password)
         server.login(sender_email, password)
-        print("Email server connected")
         self.server = server
 
     def send_email(self, receiver_email, message, subject):
