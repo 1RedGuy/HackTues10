@@ -5,6 +5,8 @@ import SetState from "../../../utils/setState";
 import { SignUpRequest } from "../../../network/auth";
 import styles from "./sign_up.module.css";
 import Router from "router";
+import Loading from "@/components/loading/loading";
+import { set } from "react-hook-form";
 
 export default function SignUp() {
   const [state, updateState] = useState({
@@ -13,19 +15,24 @@ export default function SignUp() {
     password: "",
     passwordConfirm: "",
   });
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const jwtToken = await SignUpRequest(state);
       Cookies.set("jwtToken", jwtToken, { expires: 0.5 });
       Router.push("../../logged_in/admin");
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.formContainer}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <label htmlFor="name" className={styles.label}>

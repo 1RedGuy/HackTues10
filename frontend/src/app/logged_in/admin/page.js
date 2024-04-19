@@ -9,6 +9,7 @@ import {
 } from "../../../components/admin";
 import styles from "./admin.module.css";
 import Cookies from "js-cookie";
+import Loading from "@/components/loading/loading";
 
 export default function Admin_page() {
   const [isComponentVisible, setComponentVisible] = useState({
@@ -21,7 +22,7 @@ export default function Admin_page() {
   const [subject, updateSubject] = useState({ name: "", teacher_id: 0 });
   const [allUsers, updateAllUsers] = useState([]);
   const [allSubjects, updateAllSubject] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [students, updateStudents] = useState({
     subject_id: null,
     students_ids: {
@@ -66,12 +67,15 @@ export default function Admin_page() {
   }, []);
 
   const handleCreateUsers = async () => {
+    setLoading(true);
     try {
       setInvisible("first");
       return await CreateUser(users, jwtToken);
     } catch (error) {
       setError("Failed to create user. Please try again later.");
       console.error("Error creating user:", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -81,7 +85,9 @@ export default function Admin_page() {
     return () => document.removeEventListener("click", clearErrorOnClick);
   }, []);
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.container}>
       {Object.values(isComponentVisible).every((value) => value === false) && (
         <button className={styles.button} onClick={() => setVisible("first")}>

@@ -3,21 +3,31 @@
 import CanCreate from "@/network/info";
 import styles from "./info.module.css";
 import React, { useState, useEffect } from "react";
+import Loading from "@/components/loading/loading";
 
 export function Check() {
   const [canCreate, setCanCreate] = useState(null);
+  const [loading, setLoading] = useState(false);
   {
     console.log(process.env.NEXT_PUBLIC_SERVER_URL);
   }
   useEffect(() => {
+    setLoading(true);
     const fetchCanCreateStatus = async () => {
-      const response = await CanCreate();
-      setCanCreate(response.response);
+      try {
+        const response = await CanCreate();
+        setCanCreate(response.response);
+      } catch {
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCanCreateStatus();
   }, []);
-  return canCreate !== null ? (
+  return canCreate !== null && loading ? (
+    <Loading />
+  ) : (
     <div className={styles.container}>
       {canCreate ? (
         <>
@@ -46,8 +56,6 @@ export function Check() {
         </>
       )}
     </div>
-  ) : (
-    <div>Loading...</div>
   );
 }
 
