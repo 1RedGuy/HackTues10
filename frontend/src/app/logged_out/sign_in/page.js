@@ -5,17 +5,20 @@ import SetState from "../../../utils/setState";
 import { SignInRequest } from "../../../network/auth";
 import styles from "./sign_in.module.css";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/loading/loading";
 
 export default function SignIn() {
   const [state, updateState] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await SignInRequest(state);
       if (response.response != null && response.response != undefined) {
@@ -25,10 +28,14 @@ export default function SignIn() {
       }
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.formContainer}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <label htmlFor="email" className={styles.label}>
